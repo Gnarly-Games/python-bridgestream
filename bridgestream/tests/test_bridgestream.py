@@ -18,10 +18,10 @@ class MatchInfo(BridgeSerializer):
         stream.write_bool(self.active)
 
     def read(self, stream: BridgeStream):
-        self.match_id = stream.read_int()
-        self.player_name = stream.read_string()
-        self.power = stream.read_float()
-        self.active = stream.read_bool()
+        self.match_id = stream.received_int()
+        self.player_name = stream.received_string()
+        self.power = stream.received_float()
+        self.active = stream.received_bool()
 
 
 class BridgeStreamTestCase(unittest.TestCase):
@@ -48,7 +48,7 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write_int(expected)
 
         received_stream = BridgeStream(stream.encode())
-        got = received_stream.read_int()
+        got = received_stream.received_int()
 
         self.assertEqual(expected, got)
 
@@ -58,7 +58,7 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write_float(expected)
 
         received_stream = BridgeStream(stream.encode())
-        got = received_stream.read_float()
+        got = received_stream.received_float()
 
         self.assertAlmostEqual(expected, got, places=7)
 
@@ -68,22 +68,22 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write_bool(False)
         received_stream = BridgeStream(stream.encode())
 
-        self.assertTrue(received_stream.read_bool())
-        self.assertFalse(received_stream.read_bool())
+        self.assertTrue(received_stream.received_bool())
+        self.assertFalse(received_stream.received_bool())
 
     def test_string(self):
         stream = BridgeStream()
         stream.write_string("test_data")
         received_stream = BridgeStream(stream.encode())
 
-        self.assertEqual("test_data", received_stream.read_string())
+        self.assertEqual("test_data", received_stream.received_string())
 
     def test_bytearray(self):
         stream = BridgeStream()
         stream.write_bytearray(b"test_data")
         received_stream = BridgeStream(stream.encode())
 
-        self.assertEqual(b"test_data", received_stream.read_bytearray())
+        self.assertEqual(b"test_data", received_stream.received_bytearray())
 
     def test_int_list(self):
         expected = [16, 32, 64,16, 32, 64,16, 32, 64,16, 32, 6416, 32, 6416, 32, 64,16, 32, 64,16, 32, 64,16, 32, 64]
@@ -91,7 +91,7 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write_int_list(expected)
 
         received_stream = BridgeStream(stream.encode())
-        got = received_stream.read_int_list()
+        got = received_stream.received_int_list()
 
         self.assertListEqual(expected, got)
 
@@ -101,7 +101,7 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write_float_list(expected_list)
 
         received_stream = BridgeStream(stream.encode())
-        received_list = received_stream.read_float_list()
+        received_list = received_stream.received_float_list()
 
         for expected, got in zip(expected_list, received_list):
             self.assertAlmostEqual(expected, got, places=3)
@@ -112,7 +112,7 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write_bool_list(expected)
         received_stream = BridgeStream(stream.encode())
 
-        self.assertListEqual(expected, received_stream.read_bool_list())
+        self.assertListEqual(expected, received_stream.received_bool_list())
 
     def test_string_list(self):
         expected = ["test", "da", "ta"]
@@ -120,7 +120,7 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write_string_list(expected)
         received_stream = BridgeStream(stream.encode())
 
-        self.assertListEqual(expected, received_stream.read_string_list())
+        self.assertListEqual(expected, received_stream.received_string_list())
 
     def test_bytearray_list(self):
         expected = [b"test", b"da", b"ta"]
@@ -128,7 +128,7 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write_bytearray_list(expected)
         received_stream = BridgeStream(stream.encode())
 
-        self.assertListEqual(expected, received_stream.read_bytearray_list())
+        self.assertListEqual(expected, received_stream.received_bytearray_list())
 
     def test_serializer(self):
         test_obj = MatchInfo()
@@ -136,8 +136,8 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write(test_obj)
         received_stream = BridgeStream(stream.encode())
 
-        self.assertTrue(received_stream.read_bool())
-        self.assertFalse(received_stream.read_bool())
+        self.assertTrue(received_stream.received_bool())
+        self.assertFalse(received_stream.received_bool())
     
     def test_serializer_list(self):
         test_obj = MatchInfo()
@@ -145,7 +145,7 @@ class BridgeStreamTestCase(unittest.TestCase):
         stream.write_list([test_obj, test_obj])
 
         received_stream = BridgeStream(stream.encode())
-        received_serializers = received_stream.read_list(MatchInfo)
+        received_serializers = received_stream.received_list(MatchInfo)
         self.assertEqual(len(received_serializers), 2)
 
         received_obj: MatchInfo = received_serializers[0]
@@ -161,7 +161,7 @@ class BridgeStreamTestCase(unittest.TestCase):
         received_stream = BridgeStream(stream.encode())
         self.assertTrue(received_stream.has_more())
 
-        received_stream.read_int()
+        received_stream.received_int()
         self.assertFalse(received_stream.has_more())
 
     def test_stream(self):
@@ -171,12 +171,23 @@ class BridgeStreamTestCase(unittest.TestCase):
         inner_stream.write_int(expected)
         stream.write_stream(inner_stream)
 
-        read_stream = BridgeStream(stream.encode())
-        read_inner_stream = read_stream.read_stream()
-        got = read_inner_stream.read_int()
+        received_stream = BridgeStream(stream.encode())
+        received_inner_stream = received_stream.received_stream()
+        got = received_inner_stream.received_int()
 
         self.assertEqual(expected, got)
 
+    def test_string_accepts_None(self):
+        stream = BridgeStream()
+        stream.write_string(None)
+        received_stream = BridgeStream(stream.encode())
+        self.assertEqual(received_stream.read_string(), "")
+
+    def test_initial_buffer_overrides_write_index(self):
+        stream = BridgeStream()
+        stream.write_string(None)
+        received_stream = BridgeStream(stream.encode())
+        self.assertEqual(received_stream._write_index, received_stream._capacity)
 
 if __name__ == '__main__':
     unittest.main()
