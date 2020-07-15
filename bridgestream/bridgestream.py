@@ -8,6 +8,7 @@ class BridgeStream:
     _buffer: bytearray
 
     def __init__(self, buffer=None):
+        self._write_index = 0
         if buffer:
             self._capacity = len(buffer)
             self._buffer = buffer
@@ -16,7 +17,6 @@ class BridgeStream:
             self._capacity = 16
             self._buffer = bytearray(self._capacity)
 
-        self._write_index = 0
         self._read_index = 0
 
     def encode(self) -> bytearray:
