@@ -11,6 +11,7 @@ class BridgeStream:
         if buffer:
             self._capacity = len(buffer)
             self._buffer = buffer
+            self._write_index = self._capacity
         else:
             self._capacity = 16
             self._buffer = bytearray(self._capacity)
