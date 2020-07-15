@@ -76,6 +76,8 @@ class BridgeStream:
         return value
 
     def write_string(self, value):
+        if not value:
+            value = ""
         data = bytes(value, "utf-8")
         length = len(data)
         self.write_int(length)
