@@ -11,7 +11,7 @@ class BridgeStream:
         self._write_index = 0
         if buffer:
             self._capacity = len(buffer)
-            self._buffer = buffer
+            self._buffer = bytearray(buffer)
             self._write_index = self._capacity
         else:
             self._capacity = 16
@@ -21,6 +21,12 @@ class BridgeStream:
 
     def encode(self) -> bytearray:
         return self._buffer[:self._write_index]
+
+    def append_to_source(self, data):
+        length = len(data)
+        self.grow(length)
+        struct.pack_into(f"{length}s", self._buffer, self._write_index, bytearray(data))
+        self._write_index += length
 
     def grow(self, size):
         is_enough_size = True
@@ -191,7 +197,10 @@ class BridgeStream:
         return stream
 
     def has_more(self):
-        return self._read_index < self._capacity
+        return self._write_index > self._read_index
+
+    def check_more(self, need) -> bool:
+        return self._write_index >= self._read_index + need
 
 
 class BridgeSerializer:
@@ -203,4 +212,3 @@ class BridgeSerializer:
     @abc.abstractmethod
     def read(self, stream: BridgeStream):
         raise NotImplementedError()
-
