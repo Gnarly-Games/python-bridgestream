@@ -6,7 +6,7 @@ BridgeStream is an order oriented binary serialization library developed for per
 BridgeStream is used as a part of an real-time online game to
 transmit data between the client and servers.
 
-You can encode/decode primitive types, collection on primitives, custom serializers and other BridgeStream's easily
+You can encode/decode primitive types, collection of primitives, custom serializers and other BridgeStream's easily
 and efficiently.
 
 
