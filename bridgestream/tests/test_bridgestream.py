@@ -1,6 +1,6 @@
 import unittest
 
-from bridgestream.bridgestream import BridgeStream, BridgeSerializer
+from bridgestream import BridgeStream, BridgeSerializer
 
 
 class MatchInfo(BridgeSerializer):
