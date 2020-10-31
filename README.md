@@ -9,6 +9,7 @@ transmit data between the client and servers.
 You can encode/decode primitive types, collection of primitives, custom serializers and other BridgeStream's easily
 and efficiently.
 
+![ItWorks](https://i.imgflip.com/25qbcc.jpg)
 
 ## Install
 
