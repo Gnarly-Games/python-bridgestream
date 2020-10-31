@@ -1,7 +1,7 @@
 # BridgeStream 
 
 
-BridgeStream is a order oriented binary serialization library developed for performance and efficiency.
+BridgeStream is an order oriented binary serialization library developed for performance and efficiency.
 
 BridgeStream is used as a part of an real-time online game to
 transmit data between the client and servers.
