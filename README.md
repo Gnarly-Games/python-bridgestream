@@ -9,6 +9,8 @@ transmit data between the client and servers.
 You can encode/decode primitive types, collection of primitives, custom serializers and other BridgeStream's easily
 and efficiently.
 
+Check out the [C# implementation](https://github.com/Gnarly-Games/csharp-bridgestream) if you are not a hyper-casual game developer.
+
 ![ItWorks](https://i.imgflip.com/25qbcc.jpg)
 
 ## Install
