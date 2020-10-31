@@ -6,8 +6,8 @@ BridgeStream is a order oriented binary serialization library developed for perf
 BridgeStream is used as a part of an real-time online game to
 transmit data between the client and servers.
 
-You can encode/decode primitive types, collection on primitives, custom serializers and other bridgeStream's easily
-and efficiencly.
+You can encode/decode primitive types, collection on primitives, custom serializers and other BridgeStream's easily
+and efficiently.
 
 
 ## Install
@@ -267,7 +267,7 @@ stream = BridgeStream(data)
 
 player = stream.read(Player)  # Player(name="player-1", level=5, heroes=["w-1", "m-1"])
 
-# Read the stream to the end and select create config by types
+# Read the stream to the end and create config by types
 
 hero_classes = {"warrior": Warrior, "mage": Mage}
 hero_cofigurations = {}
