@@ -9,7 +9,7 @@ transmit data between the client and servers.
 You can encode/decode primitive types, collection of primitives, custom serializers and other BridgeStream's easily
 and efficiently.
 
-Check out the [C# implementation](https://github.com/Gnarly-Games/csharp-bridgestream) if you are not a hyper-casual game developer.
+Check out the [C# implementation](https://github.com/Gnarly-Games/csharp-bridgestream) if you love typing.
 
 Check out the [golang implementation](https://github.com/Gnarly-Games/golang-bridgestream) if ```go
 panic: runtime error: invalid memory address or nil pointer dereference```
